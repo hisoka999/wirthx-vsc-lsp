@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import { workspace, ExtensionContext } from 'vscode';
-
+import * as vscode from "vscode";
 import {
 	LanguageClient,
 	LanguageClientOptions,
@@ -16,16 +16,34 @@ import {
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-	// The server is implemented in node
-	const serverModule = '/home/stefan/projects/wirthx/cmake-build-relwithdebinfo/wirthx';
+	workspace.onDidChangeConfiguration(event => {
+		if (event.affectsConfiguration('wirthx')) {
+			// Reload the client if the configuration changes
+			if (client) {
+				client.stop().then(() => {
+					client.start();
+				});
+			}
+		}
+	});
+
+	const config = workspace.getConfiguration('wirthxLanguageServer');
+	const serverModule = config.get<string>('wirthxBinary');
+	const rtlPath = config.get<string>('rtlDirectory');
+	if (!serverModule || !rtlPath) {
+		vscode.window.showErrorMessage("WirthX Language Server configuration is incomplete. Please check your settings.");
+		return;
+	}
+
+
 
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used
 	const serverOptions: ServerOptions = {
-		run: { command: serverModule, args: ["--rtl", "/home/stefan/projects/wirthx/rtl", "--lsp"] },
+		run: { command: serverModule, args: ["--rtl", rtlPath, "--lsp"] },
 		debug: {
 			command: serverModule,
-			args: ["--rtl", "/home/stefan/projects/wirthx/rtl", "--lsp"]
+			args: ["--rtl", rtlPath, "--lsp"]
 
 		}
 	};
@@ -48,6 +66,8 @@ export function activate(context: ExtensionContext) {
 		serverOptions,
 		clientOptions
 	);
+
+
 
 
 	// Start the client. This will also launch the server

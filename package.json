@@ -1,14 +1,14 @@
 {
 	"name": "wirthx-lsp",
-	"description": "A language server example",
-	"author": "Microsoft Corporation",
+	"description": "A Pascal / WirthX Language Server for Visual Studio Code",
+	"author": "hisoka999",
 	"license": "MIT",
 	"version": "1.0.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/hisoka999/vwirthx-vsc-lsp"
 	},
-	"publisher": "vscode-samples",
+	"publisher": "hisoka999",
 	"categories": [],
 	"keywords": [
 		"multi-root ready"
@@ -31,11 +31,11 @@
 					"format": "path",
 					"description": "Path to the pascal / wirthx runtime library folder"
 				},
-				"wirthxLanguageServer.maxNumberOfProblems": {
-					"scope": "resource",
-					"type": "number",
-					"default": 100,
-					"description": "Controls the maximum number of problems produced by the server."
+				"wirthxLanguageServer.wirthxBinary": {
+					"scope": "application",
+					"type": "string",
+					"format": "path",
+					"description": "Path to the wirthx binary"
 				},
 				"wirthxLanguageServer.trace.server": {
 					"scope": "window",
@@ -55,8 +55,8 @@
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -b",
 		"watch": "tsc -b -w",
-		"lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
-		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+		"lint": "eslint ./client/src --ext .ts,.tsx",
+		"postinstall": "cd client && npm install cd ..",
 		"test": "sh ./scripts/e2e.sh"
 	},
 	"devDependencies": {
